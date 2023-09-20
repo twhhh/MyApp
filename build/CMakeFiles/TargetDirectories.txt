@@ -1,0 +1,3 @@
+D:/workspace/TsFileAPP/build/CMakeFiles/MyApp.dir
+D:/workspace/TsFileAPP/build/CMakeFiles/ALL_BUILD.dir
+D:/workspace/TsFileAPP/build/CMakeFiles/ZERO_CHECK.dir
