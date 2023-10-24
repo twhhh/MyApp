@@ -1,6 +1,5 @@
 #include "Translate.h"
 #include "util.h"
-
 #include <iostream>
 #include <chrono>
 namespace tw {
@@ -24,6 +23,11 @@ Translate::Translate(const std::string& srcFile
     m_transfer = std::make_shared<BaiduTransfer>(appId, pwd, m_language);
     if (m_transfer == nullptr) {
         m_result = TWResult::RESULT_FAIL;
+        return;
+    }
+    of.open("translate_" + m_language + ".txt", std::ios::trunc);
+    if (!of.is_open()) {
+        m_result = TWResult::RESULT_SAVETXTFILEERROR;
         return;
     }
     m_result = TWResult::RESULT_SUCCESS;
@@ -70,6 +74,9 @@ TWResult::emResult Translate::start() {
                         }
                         else {
                             //翻译失败
+                            if (of.is_open()) {
+                                of << input  << std::endl;
+                            }
                             m_translateFailCount++;
                         }
                         retryCount = 0;
@@ -82,6 +89,9 @@ TWResult::emResult Translate::start() {
                             tsl->DeleteAttribute("type");
                         }
                         //翻译成功
+                        if (of.is_open()) {
+                            of << input << L"  " << trans << std::endl;
+                        }
                         m_translateSuccessCount++;
                         break;
                     }
@@ -91,7 +101,7 @@ TWResult::emResult Translate::start() {
         }
         context = context->NextSiblingElement();
     }
-    std::string saveFile("D:\\translate\\translate_" + m_language + ".ts");
+    std::string saveFile("translate_" + m_language + ".ts");
     if (m_doc.SaveFile(saveFile.c_str()) != tinyxml2::XML_SUCCESS) { //保存修改后的东西
         m_result = TWResult::RESULT_SAVEFILEERROR;
     }

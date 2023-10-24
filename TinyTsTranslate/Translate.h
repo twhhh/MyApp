@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <cwchar>
 #include <memory>
+#include <fstream>
 #include "tinyxml2.h"
 #include "BaiduTransfer.h"
 namespace tw {
@@ -14,6 +15,7 @@ public:
 		RESULT_FAIL,
 		RESULT_SAVEFILEERROR,
 		RESULT_LOADFILEERROR,
+		RESULT_SAVETXTFILEERROR,
 
 
 	};
@@ -29,6 +31,8 @@ public:
 		, const std::string& language = "English", bool translateAll = false);
 	TWResult::emResult start();
 	TWResult::emResult setLanguage(const std::string& language);
+	int getTranslateSuccessCount() const { return m_translateSuccessCount; }
+	int getTranslateFailCount() const { return m_translateFailCount; }
 
 private:
 	TWResult::emResult m_result = TWResult::RESULT_FAIL;
@@ -39,6 +43,7 @@ private:
 	bool m_translateAll = true;
 	int m_translateSuccessCount = 0;
 	int m_translateFailCount = 0;
+	std::wofstream of;
 };
 }
 

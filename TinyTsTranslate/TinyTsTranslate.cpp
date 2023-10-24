@@ -46,10 +46,29 @@ void TinyTsTranslate::generate() {
         , ui.languageBox->currentText().toStdString()
         , true);
     tw::TWResult::emResult twts = t.start();
-    if (twts == 0) {
-        std::cout << "success!" << std::endl;
+    switch (twts) {
+    case tw::TWResult::RESULT_SUCCESS: {
+        int suc = t.getTranslateSuccessCount();
+        int fai = t.getTranslateFailCount();
+        std::string msg = "success:" + std::to_string(suc) + " fail:" + std::to_string(fai);
+        QMessageBox::information(nullptr, u8"成功", QString(msg.c_str()));
+        break;
     }
-    else {
-        std::cout << "fail!" << std::endl;
+    case tw::TWResult::RESULT_LOADFILEERROR: {
+        QMessageBox::warning(nullptr, u8"错误", u8"翻译文件加载错误！");
+        break;
+    }
+    case tw::TWResult::RESULT_SAVETXTFILEERROR: {
+        QMessageBox::warning(nullptr, u8"错误", u8"（bug）保存txt地址错误！");
+        break;
+    }
+    case tw::TWResult::RESULT_SAVEFILEERROR: {
+        QMessageBox::warning(nullptr, u8"错误", u8"保存翻译后的文件错误！");
+        break;
+    }
+    case tw::TWResult::RESULT_FAIL: {
+        QMessageBox::warning(nullptr, u8"错误", u8"bug错误！");
+        break;
+    }
     }
 }
